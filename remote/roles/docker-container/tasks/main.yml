@@ -1,0 +1,40 @@
+---
+
+- name: Creates directory
+  file:
+    path: "{{ lookup('env','HOME') }}/docker"
+    state: directory
+
+- name: Ansible copy docker directory to the remote server
+  copy:
+    src: docker
+    dest: "{{ lookup('env','HOME') }}"
+
+- name: build the apache image
+  docker_image: 
+    build: 
+      path: "{{ lookup('env','HOME') }}/docker/apache"
+    name: php72-container
+    state: present
+  become: yes
+
+- name: build the database image
+  docker_image: 
+    build: 
+      path: "{{ lookup('env','HOME') }}/docker/database"
+    name: database-container
+    state: present
+  become: yes
+
+- name: build the phpmyadmin image
+  docker_image: 
+    build: 
+      path: "{{ lookup('env','HOME') }}/docker/phpmyadmin"
+    name: database-container
+    state: present
+  become: yes
+
+- name: Create and start services
+  docker_compose:
+    project_src: "{{ lookup('env','HOME') }}/docker"
+  become: yes

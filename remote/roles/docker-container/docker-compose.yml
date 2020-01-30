@@ -1,0 +1,26 @@
+version: '2.1'
+services:
+    database:
+      image: database-container
+      mem_limit: 300m
+      environment:
+        MYSQL_ROOT_PASSWORD: 
+        MYSQL_USER: 
+        MYSQL_PASSWORD: 
+        MYSQL_DATABASE: 
+    
+    phpmyadmin:
+        image: phpmyadmin-container
+        ports:
+            - "8080:80"
+        depends_on:
+            - database
+        environment:
+          PMA_HOST: database
+
+    php720:
+        image: php72-container
+        ports:
+          - "9072:80"
+        depends_on:
+          - database
